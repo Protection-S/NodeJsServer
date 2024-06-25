@@ -2,25 +2,24 @@ const express = require('express');
 const app = express();
 const port = 3000;
 
-app.get('/static', (request, response) => {
-  response.json({ header: 'Hello', body: 'Octagon NodeJS Test' });
+app.get('/static', (req, res) => {
+  res.json({ header: 'Hello', body: 'Octagon NodeJS Test' });
 });
 
-app.get('/', (request, response) => {
-    response.setHeader('Content-Type', 'text/html; charset=utf-8');
-    response.end('<h1>Привет, Октагон!</h1>');
-  });
+app.get('/', (req, res) => {
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.end('<h1>Привет, Октагон!</h1>');
+});
 
-app.get('/dynamic', (request, response) => {
-  const a = parseFloat(request.query.a);
-  const b = parseFloat(request.query.b);
-  const c = parseFloat(request.query.c);
+app.get('/dynamic', (req, res) => {
+  const { a, b, c } = req.query;
+  const values = [a, b, c].map(Number);
 
-  if (isNaN(a) || isNaN(b) || isNaN(c)) {
-    response.json({ header: 'Error' });
+  if (values.some(isNaN)) {
+    res.json({ header: 'Error' });
   } else {
-    const result = (a * b * c) / 3;
-    response.json({ header: 'Calculated', body: result.toString() });
+    const result = values.reduce((product, value) => product * value, 1) / 3;
+    res.json({ header: 'Calculated', body: result.toString() });
   }
 });
 
